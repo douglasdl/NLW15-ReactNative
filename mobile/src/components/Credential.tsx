@@ -1,12 +1,18 @@
 import { Image, ImageBackground, Text, TouchableOpacity, View } from "react-native";
+import { Feather } from "@expo/vector-icons"
+import { colors } from "@/styles/colors";
+import { QrCode } from "./QrCode";
 
 interface ICredential {
   code: string
   name: string
   email: string
+  image?: string
+  onChageAvatar?: () => void
+  onExpandQrCode?: () => void
 }
 
-export function Credential({ code, name, email }: ICredential) {
+export function Credential({ code, name, email, image, onChageAvatar, onExpandQrCode }: ICredential) {
   return (
     <View className="w-full self-stretch items-center">
       <Image 
@@ -31,10 +37,28 @@ export function Credential({ code, name, email }: ICredential) {
           <View className="w-40 h-40 bg-black rounded-full" />
         </ImageBackground>
 
-        <Image 
-          source={{ uri: "https://github.com/douglasdl.png" }} 
-          className="w-36 h-36 rounded-full -mt-24"
-        />
+        {
+          image ? (
+            <TouchableOpacity
+              activeOpacity={0.9}
+              onPress={onChageAvatar}
+            >
+              <Image 
+                source={{ uri: image }} 
+                className="w-36 h-36 rounded-full -mt-24"
+              />
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              activeOpacity={0.9}
+              className="w-36 h-36 rounded-full -mt-24 bg-gray-400 items-center justify-center"
+              onPress={onChageAvatar}
+            >
+              <Feather name="camera" color={colors.green[400]} size={32} />
+            </TouchableOpacity>
+          )
+        }
+
 
         <Text className="text-zinc-50 text-2xl font-bold mt-4">
           {name}
@@ -44,14 +68,15 @@ export function Credential({ code, name, email }: ICredential) {
           {email}
         </Text>
 
-        <Image 
-          source={require("@/assets/ticket/qrcode.png")} 
-          className="w-32 h-32"
+        <QrCode 
+          value="Douglas"
+          size={120}
         />
 
         <TouchableOpacity
           activeOpacity={0.7}
           className="mt-6"
+          onPress={onExpandQrCode}
         >
           <Text className="font-body text-orange-500 text-sm">
             Ampliar QR Code
